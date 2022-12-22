@@ -5,6 +5,12 @@
                 class="login-form"
                 @submit.prevent="handleSubmit"
             >
+                <div
+                    v-if="this.$store.state.loginError"
+                    class="login-row login-error">
+                    <span>Login or Password invalid</span>
+                </div>
+
                 <form-input
                     label="Login"
                     placeholder="Enter your login"
@@ -57,6 +63,11 @@
     flex-direction: column;
     padding: 20px 20px 0 20px;
     gap: 10px;
+}
+
+.login-error {
+    color: red;
+    padding-top: 0;
 }
 
 .login-btn {

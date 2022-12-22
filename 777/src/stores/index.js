@@ -2,6 +2,7 @@ import { createStore } from 'vuex';
 import * as types from '../stores/types';
 import AuthService from '../api/auth-service';
 import UserService from '../api/user-service';
+import { USER_LOGIN_ERROR } from '../stores/types';
 
 
 export const store = createStore({
@@ -10,6 +11,7 @@ export const store = createStore({
             isComeFromLogin: false,
             isLoading: false,
             isAuth: false,
+            loginError: false,
             balance: null,
             games: [],
             gameUrl: ''
@@ -21,12 +23,12 @@ export const store = createStore({
             try {
                 const response = await AuthService.login({ login, password });
                 const data = response.data.data[0].attributes;
-                // ? response.data.data[0].attributes
-                // : response.data[0].attributes;
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('refresh-token', data['refresh-token']);
                 commit(types.USER_SET_IS_AUTH, true);
+                commit(types.USER_LOGIN_ERROR, false);
             } catch (err) {
+                commit(types.USER_LOGIN_ERROR, true);
                 console.log('AuthService Error login', err);
             }
         },
@@ -118,10 +120,6 @@ export const store = createStore({
             state.token = data;
         },
 
-        [types.USER_FETCH_TOKEN](state, data) {
-            state.token = data;
-        },
-
         [types.USER_FETCH_REFRESH_TOKEN](state, data) {
             state.refreshToken = data;
         },
@@ -157,7 +155,11 @@ export const store = createStore({
 
         [types.USER_SET_IS_AUTH](state, data) {
             state.isAuth = data;
-        }
+        },
+
+        [types.USER_LOGIN_ERROR](state, data) {
+            state.loginError = data;
+        },
     }
 });
 
