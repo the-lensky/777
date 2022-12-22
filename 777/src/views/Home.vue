@@ -76,7 +76,6 @@ export default {
 
     mounted() {
         if (!localStorage.getItem('token')) {
-            console.log('tut');
             this.$router.push('/login');
         } else {
             this.init();
